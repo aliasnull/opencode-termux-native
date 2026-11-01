@@ -36,21 +36,23 @@ aarch64
 
 ## Installation
 
-Installation instructions will be published with the first GitHub Release.
+Open the [latest available release](https://github.com/aliasnull/opencode-termux-native/releases) and download the `opencode-aarch64` binary and `SHA256SUMS.txt`.
 
-Repository: https://github.com/aliasnull/opencode-termux-native
+For detailed installation, verification, updating, and uninstallation instructions, see the [Installation Guide](docs/installation.md).
+
+**Current release:** [OpenCode v2.2.5 for Termux (ARM64)](https://github.com/aliasnull/opencode-termux-native/releases/tag/v2.2.5-termux.1)
 
 Download binaries only from this repository's official Releases page.
 
 ## Verify a Download
 
-After downloading the release binary, verify its SHA-256 checksum against the value published with that release:
+Download `opencode-aarch64` and `SHA256SUMS.txt` from the same release, then run this command in the directory containing both files:
 
 ```bash
-sha256sum opencode
+sha256sum -c SHA256SUMS.txt
 ```
 
-Use the binary only if its checksum matches the published checksum.
+Proceed only if verification succeeds and the output reports `opencode-aarch64: OK`. Do not execute a binary whose checksum does not match.
 
 ## Build Information
 
