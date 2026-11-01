@@ -35,7 +35,7 @@ The release provides these files:
 - `opencode-aarch64`: OpenCode executable for Termux ARM64.
 - `SHA256SUMS.txt`: SHA-256 checksum for verifying the executable.
 
-Download both files into the same directory. You can use the following commands in Termux:
+Download both files into the same directory. You can use these commands in Termux:
 
 ```sh
 mkdir -p "$HOME/opencode-termux-download"
@@ -72,40 +72,40 @@ A matching checksum confirms that the file matches the published digest. It does
 
 ## 4. Install OpenCode
 
-To avoid overwriting an existing `opencode` executable, this guide initially installs the binary under the separate command name `opencode-native`.
+The command users will run after installation is `opencode`.
 
-First, check whether that command already exists:
-
-```sh
-command -v opencode-native
-```
-
-If the command already exists, inspect the existing installation before replacing anything.
-
-Install the downloaded executable:
+First, check whether an `opencode` command already exists:
 
 ```sh
-install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode-native"
+command -v opencode
 ```
 
-This installs the executable into Termux's binary directory without changing your existing `opencode` command.
+If the command returns a path, inspect the existing installation before continuing. Do not overwrite an existing executable unless you have confirmed it is safe to replace. If you want to keep the existing installation, back it up or choose a different installation path.
+
+If `command -v opencode` prints no path, install the downloaded binary:
+
+```sh
+install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode"
+```
+
+This installs the executable into Termux's binary directory.
 
 ## 5. Verify the Installation
 
 Run:
 
 ```sh
-command -v opencode-native
-opencode-native --version
+command -v opencode
+opencode --version
 ```
 
-The first command should display the path of the installed executable, usually:
+The first command should show the installed executable's path, usually:
 
 ```text
-/data/data/com.termux/files/usr/bin/opencode-native
+/data/data/com.termux/files/usr/bin/opencode
 ```
 
-The second should display the installed OpenCode version.
+The second command should display the installed OpenCode version.
 
 If the command cannot be found, confirm that `$PREFIX/bin` is included in your `PATH`:
 
@@ -115,41 +115,19 @@ printf '%s\n' "$PATH"
 
 Do not change unrelated shell configuration files unless necessary.
 
-### Using the command name `opencode`
-
-If you already have another OpenCode installation, do not overwrite it blindly. Keep using `opencode-native`, or back up and review the existing installation before deciding whether to replace it.
-
-If no `opencode` command exists and you want to use that name, check first:
-
-```sh
-command -v opencode
-```
-
-Only if the command is not found, install the binary under that name:
-
-```sh
-install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode"
-```
-
-Then verify it:
-
-```sh
-opencode --version
-```
-
 ## 6. Updating
 
 Before updating, read the release notes for the target version and download its corresponding binary and checksum file.
 
 Verify the checksum before installing the new executable.
 
-If you installed it as `opencode-native`, update it with:
+If this build is already installed as `$PREFIX/bin/opencode`, update it with:
 
 ```sh
-install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode-native"
+install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode"
 ```
 
-Download and verify the target release's files before running this command.
+Download and verify the target release's files before running this command. This command replaces the executable at that path. If the existing file belongs to another installation, back it up and confirm you want to replace it first.
 
 The update replaces the executable, not your OpenCode configuration or session data. Do not delete configuration, state, session history, or cache directories as part of an update.
 
@@ -163,12 +141,12 @@ This build targets Android ARM64. Do not install it on an incompatible architect
 
 Do not execute or install the file. Download the binary and checksum file again from the official release page. If verification still fails, stop and report the issue.
 
-### `opencode-native: command not found`
+### `opencode: command not found`
 
 Check that the executable exists:
 
 ```sh
-ls -l "$PREFIX/bin/opencode-native"
+ls -l "$PREFIX/bin/opencode"
 ```
 
 Check your `PATH`:
@@ -182,7 +160,7 @@ printf '%s\n' "$PATH"
 Confirm that the executable has appropriate permissions:
 
 ```sh
-ls -l "$PREFIX/bin/opencode-native"
+ls -l "$PREFIX/bin/opencode"
 ```
 
 If necessary, reinstall it using the installation command in this guide. Avoid broad permission changes to your home directory.
@@ -193,16 +171,16 @@ When reporting a problem, include the OpenCode version, Android and Termux detai
 
 ## 8. Uninstallation
 
-If you installed the executable using this guide, remove only that executable:
-
-```sh
-rm "$PREFIX/bin/opencode-native"
-```
-
-If you installed it as `opencode`, remove that executable only after confirming it belongs to this installation:
+If you installed this build at `$PREFIX/bin/opencode`, first confirm that the file belongs to this project:
 
 ```sh
 command -v opencode
+```
+
+If you are certain it is this build and want to uninstall it, remove only the executable:
+
+```sh
+rm "$PREFIX/bin/opencode"
 ```
 
 Do not delete your OpenCode configuration, session history, state, or cache as part of uninstalling the executable.
