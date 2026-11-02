@@ -2,7 +2,7 @@
 
 This guide explains how to install OpenCode Native for Termux on Android ARM64.
 
-> **Important:** This is an experimental, community-maintained build. Read the release notes and verify the downloaded binary before installing it.
+> **Important:** This is an experimental, community-maintained build. Read the release notes before installing it. The automatic installer verifies the downloaded binary's SHA-256 checksum, but a matching checksum does not independently prove that the publisher or release is trustworthy.
 
 ## 1. Requirements
 
@@ -24,18 +24,43 @@ This guide explains how to install OpenCode Native for Termux on Android ARM64.
 
 This build targets native Termux on Android ARM64. It is not intended for installation inside a proot or chroot Linux distribution.
 
-## 2. Download the Release
+## 2. Install OpenCode
 
-Open the official project release:
+Choose one of the following methods.
 
-**Release:** https://github.com/aliasnull/opencode-termux-native/releases/tag/v2.2.5-termux.1
+### Method A: Automatic Installation (Recommended)
 
-The release provides these files:
+The installer downloads the latest compatible published Termux release, verifies its checksum, checks the binary, and installs it into Termux's binary directory.
 
-- `opencode-aarch64`: OpenCode executable for Termux ARM64.
-- `SHA256SUMS.txt`: SHA-256 checksum for verifying the executable.
+Run in Termux:
 
-Download both files into the same directory. You can use these commands in Termux:
+```sh
+curl -fsSL https://raw.githubusercontent.com/aliasnull/opencode-termux-native/main/scripts/termux-install.sh | bash
+```
+
+If `curl` is not installed, install it first:
+
+```sh
+pkg install curl
+```
+
+**Security note:** This command downloads a script and runs it immediately. If you prefer to inspect the script first, download it and read it before executing:
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/aliasnull/opencode-termux-native/main/scripts/termux-install.sh
+less termux-install.sh
+bash termux-install.sh
+```
+
+The installer will stop rather than overwrite an existing `$PREFIX/bin/opencode` installation. If you already have OpenCode installed, inspect that installation and follow the updating instructions below instead.
+
+### Method B: Manual Installation
+
+Use this method if you prefer to download and verify the release binary yourself.
+
+Open the project's [Releases page](https://github.com/aliasnull/opencode-termux-native/releases) and choose the release you want. The example below uses `v2.2.5-termux.1`.
+
+Download both release files into the same directory:
 
 ```sh
 mkdir -p "$HOME/opencode-termux-download"
@@ -51,9 +76,7 @@ If `curl` is not installed, install it with:
 pkg install curl
 ```
 
-## 3. Verify the Download
-
-Before installing the executable, verify its SHA-256 checksum:
+Verify the downloaded binary before installing it:
 
 ```sh
 cd "$HOME/opencode-termux-download"
@@ -68,21 +91,15 @@ opencode-aarch64: OK
 
 Do not install or execute the file if verification fails. Download the files again and retry. If the mismatch persists, stop and report the issue.
 
-A matching checksum confirms that the file matches the published digest. It does not independently prove that the publisher or release is trustworthy.
-
-## 4. Install OpenCode
-
-The command users will run after installation is `opencode`.
-
-First, check whether an `opencode` command already exists:
+Before installing, check whether an `opencode` command already exists:
 
 ```sh
 command -v opencode
 ```
 
-If the command returns a path, inspect the existing installation before continuing. Do not overwrite an existing executable unless you have confirmed it is safe to replace. If you want to keep the existing installation, back it up or choose a different installation path.
+If the command returns a path, inspect the existing installation before continuing. Do not overwrite an existing executable unless you have confirmed it is safe to replace.
 
-If `command -v opencode` prints no path, install the downloaded binary:
+If no existing command is found, install the binary:
 
 ```sh
 install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode"
@@ -90,7 +107,7 @@ install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/op
 
 This installs the executable into Termux's binary directory.
 
-## 5. Verify the Installation
+## 3. Verify the Installation
 
 Run:
 
@@ -115,23 +132,43 @@ printf '%s\n' "$PATH"
 
 Do not change unrelated shell configuration files unless necessary.
 
-## 6. Updating
+## 4. Updating OpenCode
 
-Before updating, read the release notes for the target version and download its corresponding binary and checksum file.
+### Automatic Update
 
-Verify the checksum before installing the new executable.
+If OpenCode was installed using this project's automatic installer, run:
 
-If this build is already installed as `$PREFIX/bin/opencode`, update it with:
+```sh
+curl -fsSL https://raw.githubusercontent.com/aliasnull/opencode-termux-native/main/scripts/termux-update.sh | bash
+```
+
+The updater checks the latest compatible published release, verifies the downloaded binary, and replaces the managed executable. It also includes rollback handling if the update fails.
+
+For the same security reason as the installer, you can download and inspect the updater before running it:
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/aliasnull/opencode-termux-native/main/scripts/termux-update.sh
+less termux-update.sh
+bash termux-update.sh
+```
+
+If OpenCode was installed manually and the updater reports that the installation is not managed by this project, do not force an update. Review the script's supported options and confirm that `$PREFIX/bin/opencode` is the intended executable before using its `--adopt-existing` option.
+
+### Manual Update
+
+Before updating manually, read the release notes for the target version and download its corresponding binary and checksum file. Verify the checksum using the steps in **Method B: Manual Installation**.
+
+If this build is installed at `$PREFIX/bin/opencode`, replace it with the verified binary:
 
 ```sh
 install -Dm755 "$HOME/opencode-termux-download/opencode-aarch64" "$PREFIX/bin/opencode"
 ```
 
-Download and verify the target release's files before running this command. This command replaces the executable at that path. If the existing file belongs to another installation, back it up and confirm you want to replace it first.
+This command replaces the executable at that path. If the existing file belongs to another installation, back it up and confirm you want to replace it first.
 
-The update replaces the executable, not your OpenCode configuration or session data. Do not delete configuration, state, session history, or cache directories as part of an update.
+Updating replaces the executable, not your OpenCode configuration or session data. Do not delete configuration, state, session history, or cache directories as part of an update.
 
-## 7. Troubleshooting
+## 5. Troubleshooting
 
 ### Architecture is not `aarch64`
 
@@ -139,7 +176,7 @@ This build targets Android ARM64. Do not install it on an incompatible architect
 
 ### Checksum verification fails
 
-Do not execute or install the file. Download the binary and checksum file again from the official release page. If verification still fails, stop and report the issue.
+Do not execute or install the file. Download the binary and checksum file again from the project's [Releases page](https://github.com/aliasnull/opencode-termux-native/releases). If verification still fails, stop and report the issue.
 
 ### `opencode: command not found`
 
@@ -169,7 +206,7 @@ If necessary, reinstall it using the installation command in this guide. Avoid b
 
 When reporting a problem, include the OpenCode version, Android and Termux details, device architecture, and exact error output. Remove API keys, tokens, passwords, and other private information from logs.
 
-## 8. Uninstallation
+## 6. Uninstallation
 
 If you installed this build at `$PREFIX/bin/opencode`, first confirm that the file belongs to this project:
 
@@ -185,7 +222,13 @@ rm "$PREFIX/bin/opencode"
 
 Do not delete your OpenCode configuration, session history, state, or cache as part of uninstalling the executable.
 
-The downloaded files can be removed separately if they are no longer needed:
+If you installed it using the automatic installer, its management marker is stored under `$PREFIX/var/lib/opencode-termux-native/`. You may remove that project's marker directory after confirming you no longer need the installer/updater to manage this installation:
+
+```sh
+rm -r "$PREFIX/var/lib/opencode-termux-native"
+```
+
+The downloaded manual-installation files can be removed separately if they are no longer needed:
 
 ```sh
 rm -rf "$HOME/opencode-termux-download"
@@ -193,9 +236,9 @@ rm -rf "$HOME/opencode-termux-download"
 
 Run that command only if the directory contains no other files you want to keep.
 
-## 9. Project Status
+## 7. Project Status
 
-OpenCode Native for Termux is an independent community project, not an official OpenCode release. This release is experimental, and future versions may change.
+OpenCode Native for Termux is an independent community project, not an official OpenCode release. This release is experimental, and future versions may change. Installation through `pkg install` is not available yet.
 
 - Project repository: https://github.com/aliasnull/opencode-termux-native
 - Releases: https://github.com/aliasnull/opencode-termux-native/releases
