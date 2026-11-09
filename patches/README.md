@@ -1,53 +1,84 @@
 # Patch Guide
 
-This directory contains the Termux/Android-specific patches used by this project.
+This directory contains the Termux/Android-specific build patch retained
+by this project.
 
-## Compatibility
+## Current tested source
 
-These patches were created against the OpenCode upstream repository at commit:
+The current project source is based on:
 
-- Repository: https://github.com/anomalyco/opencode
-- Commit: `baa2359`
-- Tested OpenCode version: `2.2.5`
+-   Repository: https://github.com/anomalyco/opencode
+-   OpenCode version: `2.2.6`
+-   Upstream commit: `dc2ffcf`
+-   AndroidTUI version: `0.8.3`
 
-They are not guaranteed to apply to other commits or versions. If the upstream source changes, review and update the patches before using them.
+The main repository and the temporary v2.2.6 workspace were compared,
+and their `packages/cli/script/build.ts` files were identical. A fresh
+native Termux build from the main repository also completed
+successfully, producing `opencode v2.2.6` for `linux-arm64` with the
+WebUI enabled.
 
-## Patch files
+## Retained patch
 
-- `bun-lock.patch` updates dependency aliases and lockfile entries for the AndroidTUI packages used by this build.
-- `build-script.patch` updates the CLI build script for Android/Termux compatibility, including PTY and file-watcher fallbacks, plus build options.
+### `build-script.patch`
 
-Apply both patches to a clean checkout of the specified upstream commit. The patches modify separate files, so either order works; the commands below apply the lockfile patch first.
+This is a historical Termux/Android build patch. It contains
+build-script adaptations, including the AndroidTUI import alias handling
+that maps relevant `@opentui/*` imports to the `@androidtui/*` packages
+used by this project. The patch also records earlier Termux-specific
+build adjustments.
 
-## Apply and verify
+The v2.2.6 source already contains the required build-script changes.
+The current `packages/cli/script/build.ts` has been verified against the
+temporary v2.2.6 workspace, and the main repository builds successfully.
+Therefore:
 
-Run these commands in Termux. They create a separate source checkout so you do not have to modify an existing working build directory.
+-   Do not apply `build-script.patch` again to the current v2.2.6
+    source.
+-   Keep the patch as a historical reference for reviewing or porting
+    the Termux-specific changes to a future upstream source update.
+-   Before using it with another upstream version, inspect the target
+    source and review the patch. Do not force-apply it.
 
-```bash
-git clone https://github.com/anomalyco/opencode.git ~/opencode-patch-check
-cd ~/opencode-patch-check
-git checkout baa2359
+## Removed patch
 
-git apply --check ~/opencode-termux-native/patches/bun-lock.patch
-git apply --check ~/opencode-termux-native/patches/build-script.patch
+`bun-lock.patch` was part of the earlier v2.2.5 setup. It became
+obsolete after the dependency aliases and lockfile were updated for the
+v2.2.6 source and Bun 1.4.4. It is no longer included in this
+repository.
 
-git apply ~/opencode-termux-native/patches/bun-lock.patch
-git apply ~/opencode-termux-native/patches/build-script.patch
+## Build verification
 
-git diff --check
-git status --short
+The main repository was built natively in Termux with:
+
+``` bash
+OPENCODE_VERSION=2.2.6 OPENCODE_TARGET=linux-arm64 bun run --cwd packages/cli build -- --skip-install
 ```
 
-The commands assume this repository is located at `~/opencode-termux-native`. If you keep it elsewhere, update the two patch paths accordingly.
+The build completed with the WebUI enabled. The generated binary
+reported:
 
-`git apply --check` verifies that each patch can be applied before making changes. If either check fails, stop and inspect the error rather than forcing the patch.
+``` text
+opencode v2.2.6
+```
 
-After applying, `git diff --check` checks for whitespace errors. `git status --short` should show changes to `bun.lock` and `packages/cli/script/build.ts`.
+The resulting CLI binary was generated at:
+
+``` text
+packages/cli/dist/cli-linux-arm64/bin/opencode
+```
+
+Build output under `dist/` is ignored by Git and should not be
+committed.
 
 ## Important notes
 
-- These patches are build inputs, not a prebuilt binary or a complete installer.
-- Applying the patches does not build or install OpenCode.
-- Do not run dependency installation or rebuild commands until you have reviewed the build instructions and are ready to test.
-- The lockfile patch intentionally changes the `trustedDependencies` list and removes one patched dependency entry. Review these changes when auditing or updating the build.
-- Keep your existing source/build directory untouched until the clean-checkout verification succeeds.
+-   These patches are source-level build adjustments, not prebuilt
+    binaries or a complete installer.
+-   The current v2.2.6 source already includes the required build-script
+    changes.
+-   When updating to a new upstream version, review the relevant source
+    changes and validate the Termux build before updating or applying
+    any patch.
+-   Keep a known-good source/build workspace until the updated source
+    has been built and tested successfully.

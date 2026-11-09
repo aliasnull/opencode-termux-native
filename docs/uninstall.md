@@ -3,11 +3,12 @@
 This guide explains how to remove OpenCode Native for Termux without
 accidentally deleting unrelated installations or personal data.
 
-> **Important:** The project is experimental. Use the uninstall
-> instructions for the release you installed. Normal uninstall removes
-> the project executable and its installer ownership metadata only. Full
-> cleanup is a separate, destructive option that removes personal
-> OpenCode data.
+> **Important:** OpenCode `2.2.6` was built and tested on native Android
+> ARM64 Termux. The project remains experimental. Use the uninstall
+> instructions that match the installation method and release you
+> installed. Normal uninstall removes the project executable and its
+> installer ownership metadata only. Full cleanup is a separate,
+> destructive option that removes personal OpenCode data.
 
 ## 1. Before Uninstalling
 
@@ -305,9 +306,11 @@ paths and command output after removing private information.
 ## 9. Project Status
 
 OpenCode Native for Termux is an independent community project, not an
-official OpenCode release. Exact uninstall steps may differ by release
-and installation method. Use the instructions that match the release you
-installed.
+official OpenCode release. OpenCode `2.2.6` was built successfully and
+the TUI and WebUI were tested on native Android ARM64 Termux. The
+project remains experimental, and exact uninstall steps may differ by
+release and installation method. Use the instructions that match the
+release you installed.
 
 -   Project repository:
     https://github.com/aliasnull/opencode-termux-native
