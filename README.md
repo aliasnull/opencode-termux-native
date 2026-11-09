@@ -68,15 +68,15 @@ match.
 
 ## Build Information
 
-  Item                  Value
-  --------------------- ---------------------------------------
-  OpenCode version      `2.2.6`
-  Upstream repository   https://github.com/anomalyco/opencode
-  Upstream commit       `dc2ffcf`
-  Build tool            Bun `1.4.4`
-  AndroidTUI version    `0.8.3`
-  Target architecture   Android ARM64 (`aarch64`)
-  License               MIT
+| Item | Value |
+|---|---|
+| OpenCode version | `2.2.6` |
+| Upstream repository | https://github.com/anomalyco/opencode |
+| Upstream commit | `dc2ffcf` |
+| Build tool | Bun `1.4.4` |
+| AndroidTUI version | `0.8.3` |
+| Target architecture | Android ARM64 (`aarch64`) |
+| License | MIT |
 
 The build includes Android-specific adjustments for OpenTUI package
 resolution, PTY handling, file watching, and Bun compilation settings.
