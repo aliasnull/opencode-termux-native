@@ -51,7 +51,7 @@ curl -fsSL https://raw.githubusercontent.com/aliasnull/opencode-termux-native/ma
 If `curl` is not installed, install it first:
 
 ``` sh
-pkg install curl
+pkg install curl coreutils jq -y 
 ```
 
 **Security note:** This command downloads a script and runs it
