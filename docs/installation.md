@@ -54,6 +54,12 @@ If `curl` is not installed, install it first:
 pkg install curl coreutils jq -y 
 ```
 
+OpenCode may require `node` & `npm` if not installed, install it first:
+
+``` sh
+pkg install nodejs -y 
+```
+
 **Security note:** This command downloads a script and runs it
 immediately. If you prefer to inspect the script first, download it and
 read it before executing:
