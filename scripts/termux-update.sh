@@ -77,6 +77,7 @@ if [[ ! -e "$marker" && ! -L "$marker" ]]; then
         die "Another installer/updater may be running, or a stale lock exists: $lock_dir. Confirm no operation is active, then remove that lock directory manually."
     fi
     adoption_tmp=""
+    # shellcheck disable=SC2329
     cleanup_adoption() {
         local status=$?
         local lock_owner=""
@@ -417,12 +418,12 @@ runtime_dir="$script_dir/../lib/opencode-termux-native"
     printf 'Error: managed OpenCode binary is missing: %s\n' "$runtime_dir/opencode" >&2
     exit 1
 }
-[[ -d "$runtime_dir/icu" ]] || {
-    printf 'Error: managed ICU runtime is missing: %s\n' "$runtime_dir/icu" >&2
+[[ -d "$runtime_dir/icu/lib" ]] || {
+    printf 'Error: managed ICU runtime is missing: %s\n' "$runtime_dir/icu/lib" >&2
     exit 1
 }
 
-export LD_LIBRARY_PATH="$runtime_dir/icu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="$runtime_dir/icu/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 exec "$runtime_dir/opencode" "$@"
 WRAPPER
 chmod 755 "$staged_wrapper"

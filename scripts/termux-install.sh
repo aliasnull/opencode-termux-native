@@ -311,12 +311,12 @@ runtime_dir="$script_dir/../lib/opencode-termux-native"
     printf 'Error: managed OpenCode binary is missing: %s\n' "$runtime_dir/opencode" >&2
     exit 1
 }
-[[ -d "$runtime_dir/icu" ]] || {
-    printf 'Error: managed ICU runtime is missing: %s\n' "$runtime_dir/icu" >&2
+[[ -d "$runtime_dir/icu/lib" ]] || {
+    printf 'Error: managed ICU runtime is missing: %s\n' "$runtime_dir/icu/lib" >&2
     exit 1
 }
 
-export LD_LIBRARY_PATH="$runtime_dir/icu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="$runtime_dir/icu/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 exec "$runtime_dir/opencode" "$@"
 WRAPPER
 staged_wrapper_owned=1

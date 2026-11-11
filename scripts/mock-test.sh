@@ -224,6 +224,12 @@ assert_version() {
     [[ "$output" == "$expected" ]]
 }
 assert_no_lock() { assert_absent "$1/var/lib/opencode-termux-native/update.lock"; }
+assert_icu_wrapper_path() {
+    local wrapper="$1"
+    grep -Fqx "export LD_LIBRARY_PATH=\"\$runtime_dir/icu/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}\"" "$wrapper" &&
+    ! grep -Fqx "export LD_LIBRARY_PATH=\"\$runtime_dir/icu\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}\"" "$wrapper"
+}
+
 assert_no_transaction_artifacts() {
     local prefix="$1"
     shopt -s nullglob
@@ -261,6 +267,7 @@ test_installer_success() {
     assert_file "$TEST_PREFIX/lib/opencode-termux-native/opencode" &&
     grep -qx 'v9.1.0-termux.1' "$TEST_PREFIX/var/lib/opencode-termux-native/managed-install" &&
     assert_version "$TEST_PREFIX/bin/opencode" "opencode v9.1.0-termux.1" &&
+    assert_icu_wrapper_path "$TEST_PREFIX/bin/opencode" &&
     assert_no_lock "$TEST_PREFIX"
 }
 
@@ -371,6 +378,7 @@ test_updater_success() {
     }
     grep -qx 'v9.2.0-termux.1' "$TEST_PREFIX/var/lib/opencode-termux-native/managed-install" &&
     assert_version "$TEST_PREFIX/bin/opencode" "opencode v9.2.0-termux.1" &&
+    assert_icu_wrapper_path "$TEST_PREFIX/bin/opencode" &&
     assert_no_lock "$TEST_PREFIX" &&
     assert_no_transaction_artifacts "$TEST_PREFIX"
 }
